@@ -1,5 +1,7 @@
 # Challenge 02 - Azure Boards: Agile Project Management
 
+[< Previous Challenge](./Challenge-Projects.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-Repos-1.md)
+
 ## Introduction
 
 Agile project management is a key component of building a modern DevOps culture at your organization. If you are new to Agile or just want a refresher, we recommend you review the following articles:
