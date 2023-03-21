@@ -21,10 +21,10 @@ In this challenge we will implement a few policies in Azure DevOps to ensure tha
    - Require at least 1 linked work item.
    - Add yourself as an required reviewer when pull requests affect the items on the "Views" folder    
 - Using a simple Git Branching strategy lets make a change. 
-   - Update the About page with additional information , currently it says `Use this area to provide additional information.` and it should say `Azure DevOps Workshop`
+   - Update the Privacy page (Resources\App\Views\Home\Privacy.cshtml) with additional information , currently it says `Use this page to detail your site's privacy policy.` and it should say `Azure DevOps Workshop`
    - Create a Work Item requesting we implement the feature. 
    - Make the change in your code. Be sure to make this change on a new "feature branch"
-   - Create a Pull Request to merge the change into `master`. Notice how the policies you set are audited on your pull request.
+   - Create a Pull Request to merge the change into `master` and link it with the respective work item you created. Notice how the policies you set are audited on your pull request.
    - Complete your pull request.
    - Remove the policy when done.
 
