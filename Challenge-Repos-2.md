@@ -1,5 +1,7 @@
 # Challenge 03B - Azure Repos: Branching & Policies
 
+[< Previous Challenge](./Challenge-Repos-1.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-Pipelines-1.md)
+
 ## Introduction
 
 When we have a deployed instance of our code, we are likely going to get a request to add a feature to our code. To this we need to implement a branching strategy. Review the below articles on the basics of a Git branching strategy and the modified version Microsoft uses called Release Flow.
