@@ -1,4 +1,4 @@
-# Challenge 04 - Azure Pipelines: Infrastructure as Code
+# Challenge 04A - Azure Pipelines: Infrastructure as Code
 
 [< Previous Challenge](./Challenge-Repos-2.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-Pipelines-2.md)
 
