@@ -1,5 +1,7 @@
 # Challenge 04C - Azure Pipelines: Continuous Delivery
 
+[< Previous Challenge](./Challenge-Pipelines-2.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-Monitoring.md)
+
 ## Introduction
 
 In DevOps after we automate our build process, we want to automate our release process, we do this with a technique called Continuous Delivery. Please take a moment to review this brief article talking about why this is important. 
