@@ -1,5 +1,7 @@
 # Challenge 01 - Setup & Projects
 
+**[Home](../README.md)** - [Next Challenge >](./Challenge-Boards.md)
+
 ## Introduction
 
 DevOps is a very broad topic and you have lots of choices when it comes to the tools that you use. In this challenge you will setup your computer and cloud environment with the minimum required tools. 
