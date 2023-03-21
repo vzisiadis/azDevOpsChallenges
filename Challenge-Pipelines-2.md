@@ -18,8 +18,8 @@ In Azure DevOps we use Azure Pipelines to automate our build process. For our ap
 Add an **ASP.NET Core** task for each command (option)
    1. First we call the `restore` command, this will get all the dependencies that our .net core application needs to compile
    2. Next we call the `build` command, this will actually compile our code
-   3. The last .NET Core `build` task in the template is to `publish` the .net core app. `   ` Set $(System.DefaultWorkingDirectory)/PublishedWebApp as output path.
-Use the required Build Configuration and Project Build and Test paths
+   3. The last .NET Core `build` task in the template is to `publish` the .net core app. Set $(System.DefaultWorkingDirectory)/PublishedWebApp as output path.
+Use the required Build Configuration and Project Build and Test paths 
 ([hint](https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops&tabs=dotnetfive))
 - Now that our .NET core application is compiled we need to package it into a Docker Container and publish the container to Azure Container Registry, to do this we are going to add a docker task to our build pipeline.
    1. Create a Service Connection of type Docker Registry for your Azure Container Registry
