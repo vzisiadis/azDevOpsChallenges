@@ -1,5 +1,7 @@
 # Challenge 04 - Azure Pipelines: Infrastructure as Code
 
+[< Previous Challenge](./Challenge-Repos-2.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-Pipelines-2.md)
+
 ## Introduction
 
 Great we now have some code, now we need an environment to deploy it to. In DevOps we can automate the process of deploying the Azure Services we need with an Bicep (ARM) template. Review the following article.
