@@ -14,7 +14,7 @@ In Azure DevOps we use Azure Pipelines to automate our build process. For our ap
 
 - Use the **YAML editor** to create a build pipeline and name it `CI Build`. 
 - Add a task to Use .Net version **7.x** and then use the **ASP.NET Core** tasks (the one with the icon with the black box) to build the application code and tests 
-- There are the 4 major steps to building a .NET Core application (hint](https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core?view=azure-devops&tabs=designer)).
+- There are the 4 major steps to building a .NET Core application (hint](https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core?view=azure-devops&tabs=designer)). We will exclude the Unit testing at this point
 Add an **ASP.NET Core** task for each command (option)
    1. First we call the `restore` command, this will get all the dependencies that our .net core application needs to compile
    2. Next we call the `build` command, this will actually compile our code
