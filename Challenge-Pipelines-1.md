@@ -4,9 +4,9 @@
 
 ## Introduction
 
-Great we now have some code, now we need an environment to deploy it to. In DevOps we can automate the process of deploying the Azure Services we need with an Bicep (ARM) template. Review the following article.
+Great we now have some code, now we need an environment to deploy it to. In DevOps we can automate the process of deploying the Azure Services we need with an Bicep template. Review the following article.
 
-1. [Infrastructure As Code: Bicep](../../045-InfraAsCode-Bicep/README.md)
+1. [Infrastructure As Code: Bicep](https://github.com/microsoft/WhatTheHack/blob/master/045-InfraAsCode-Bicep/README.md)
 
 ## Description
 
