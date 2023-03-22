@@ -23,12 +23,4 @@ In Azure DevOps we can use Azure Pipelines to automate deploying our Azure infra
 
 ## Success Criteria
 
-1. Your infrastructure release should complete without any errors and you should see all three environments out in Azure. 
-
-## Learning Resources
-
-We are just scratching the surface of what is offered in Azure for Infrastructure as Code, if you are interested in learning more there are multiple What the Hacks focused on Azure Infrastructure as Code:
-- [Infrastructure As Code: Bicep](../../045-InfraAsCode-Bicep/README.md)
-- [Infrastructure As Code: ARM & DSC](../../011-InfraAsCode-ARM-DSC/readme.md)
-- [Infrastructure As Code: Terraform](../../012-InfraAsCode-Terraform/Student/readme.md)
-- [Infrastructure As Code: Ansible](../../013-InfraAsCode-Ansible/Student/readme.md)
+1. Your infrastructure release should complete without any errors and you should see all three environments out in Azure.
