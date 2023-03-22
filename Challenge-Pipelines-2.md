@@ -4,9 +4,7 @@
 
 ## Introduction
 
-Great we now have some infrastructure and some code, lets build it. In DevOps we automate this process using something called Continuous Integration. Take a moment to review the article below to gain a better understanding of what CI is. 
-
-1. [What is Continuous Integration?](https://docs.microsoft.com/en-us/azure/devops/learn/what-is-continuous-integration)
+Great we now have some infrastructure and some code, lets build it. In DevOps we automate this process using something called Continuous Integration.
 
 ## Description
 
