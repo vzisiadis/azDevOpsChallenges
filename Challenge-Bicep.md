@@ -1,6 +1,6 @@
 # Challenge 06 - Bicep modules - Specs - Versioning
 
-[< Previous Challenge](./Challenge-Pipelines-2.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-Monitoring.md)
+[< Previous Challenge](./Challenge-Pipelines-2.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-DevSecOps.md)
 
 ## Introduction
 
