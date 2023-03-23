@@ -28,6 +28,6 @@ In this challenge we will update our bicep code too be more reusable and also pr
   
 2. Publish your bicep template as a Template Spec through a YAML pipeline. Access the template through the Azure portal and deploy it (use different parameters at least for the Web App name) [Hint](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-specs?tabs=azure-cli#use-tags)    
 
-3. Publish your bicep tempate in your Azure Container Registry. Use a versioning scheme of major.minor (i.e. templateName:1.0, templateName:0.1 or similar) [Hint](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/private-module-registry?tabs=azure-cli)  
+3. Publish your bicep tempate in your Azure Container Registry through a YAML pipeline. Use a versioning scheme of major.minor (i.e. templateName:1.0, templateName:0.1 or similar) [Hint](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/private-module-registry?tabs=azure-cli)  
    Update your bicep code so that it uses the module from the registry and not use any of the local module files) 
 
