@@ -1,6 +1,6 @@
 # Challenge 05 - Azure Monitoring: Application Insights
 
-[< Previous Challenge](./Challenge-Pipelines-3.md) - **[Home](../README.md)** 
+[< Previous Challenge](./Challenge-Pipelines-3.md) - **[Home](../README.md)** - [Next Challenge >](./Challenge-Bicep.md)
 
 ## Introduction
 
