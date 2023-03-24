@@ -1,0 +1,99 @@
+# Starter pipeline
+
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ branches:
+   include:
+     - main
+ paths:
+   include:
+     - deploy/*
+   exclude:
+     - pipelines/*
+     
+stages: 
+- stage: validateEnvironment
+  displayName: 'Validate the Environment'
+  jobs:
+  - job: lintValidatePreview
+    displayName: 'Lint, Validate and Preview the Bicep files'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Lint main bicep file'
+      inputs:
+        azureSubscription: 'appinnday2023'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az bicep build --file main.bicep
+        workingDirectory: 'bicep/'
+      name: lintMain
+    - task: AzureCLI@2
+      displayName: 'Validate main bicep file'
+      inputs:
+        azureSubscription: 'appinnday2023'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az deployment group validate --template-file main.bicep --resource-group $(resource-group) \
+          vmAdminPassword=$(vmAdminPassword)
+        workingDirectory: 'bicep/'         
+      name: validateMain   
+    - task: AzureCLI@2
+      displayName: 'Preview main bicep file'
+      inputs:
+        azureSubscription: 'appinnday2023'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az deployment group what-if --template-file main.bicep --resource-group $(resource-group) \
+          vmAdminPassword=$(vmAdminPassword)
+        workingDirectory: 'bicep/'    
+      name: previewMain   
+  - job: ms_sec_devops_bicep
+    displayName: 'Template Analyzer - Microsoft Security DevOps'
+    dependsOn: lintValidatePreview
+    pool: 
+      vmImage: windows-latest
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Install dotnet 6.0'
+      inputs:
+        version: 6.0.x 
+    - task: MicrosoftSecurityDevOps@1
+      displayName: 'Run Template Analyzer - MS SecurityDevOps'
+      inputs:
+        categories: 'IaC,secrets'
+        # Template Analyzer Template Analyzer scans ARM (Azure Resource Manager) and Bicep Infrastructure-as-Code (IaC) templates 
+        #to ensure security and best practice checks are being followed before deployment of your Azure solutions.
+        tools: 'templateanalyzer,credscan'
+        break: true #will fail this step if any error level results are found - Default is false# 
+- stage: createEnvironment
+  displayName: 'Create the Environment'
+  dependsOn: validateEnvironment
+  jobs:
+  - job: createInfraJob
+    displayName: 'Create the main Infrastructure'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Create Infra'
+      continueOnError: false
+      inputs:
+        azureSubscription: 'appinnday2023'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          DEPLOYMENT_OUTPUTS=$(az deployment group create --template-file main.bicep --resource-group $(resource-group) \
+          --parameters apimPublisherMail=vzisiadis@microsoft.com apimPublisherName='Vasilis Zisiadis' \
+          --query properties.outputs)
+          if [[ -z $DEPLOYMENT_OUTPUTS ]]; then exit 1; fi
+        workingDirectory: 'bicep/'
+      name: buildInfra    
+
