@@ -1,0 +1,120 @@
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - src/AuthHelper.FunctionApp/*
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: sast
+  displayName: 'Static Application Security Testing'
+  jobs:
+  - job: lint
+    displayName: 'Lint'
+    # A linter is a static code analysis tool used to flag programming errors, bugs, stylistic errors and suspicious constructs.
+    steps:
+      - script: |
+          docker pull github/super-linter:v4
+          docker run -e RUN_LOCAL=true \
+          -e VALIDATE_CSHARP=true \
+          -e DISABLE_ERRORS=true \
+          -v $(System.DefaultWorkingDirectory):/tmp/lint \
+          github/super-linter:v4
+        displayName: 'Code Scan using GitHub Super-Linter'
+  - job: ms_security_devops
+    displayName: 'Credential, executables and security scan - Microsoft Security DevOps'
+    dependsOn: lint
+    pool: 
+      vmImage: windows-latest
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Install dotnet 6.0'
+      inputs:
+        version: 6.0.x 
+    - task: MicrosoftSecurityDevOps@1
+      displayName: 'Run Microsoft Security DevOps'
+      inputs:
+        categories: 'secrets' #IaC,secrets,code
+        # binskim is a checker that examines Portable Executable (PE) files and their associated Program Database File Formats (PDB) to identify various security problems. 
+        #   These include:Use of Outdated Compiler Tool Sets,Insecure Compilation Settings,Signing issues
+        # Credential Scanner (also known as CredScan) is a tool developed and maintained by Microsoft to identify credential leaks such as those in source code and configuration files
+        #   common types: default passwords, SQL connection strings, Certificates with private keys
+        # Trivy is a comprehensive and versatile security scanner. Trivy has scanners that look for security issues, and targets where it can find those issues.
+        tools: 'credscan,trivy,binskim' #'credscan,trivy' # ,terrascan,template-analyzer,binskim
+        # languages: 'python' The following languages are supported by Defender for DevOps:Python,Java Script,Type Script
+        break: false #will fail this step if any error level results are found - Default is false# 
+    # MEND BOLT REQUIRES ACTIVATION
+    # - task: WhiteSource@21
+    #   displayName: Opensource vulnerabilities check
+    #   inputs:
+    #     cwd: '$(System.DefaultWorkingDirectory)/src'
+    #     projectName: 'appinnovationday2023'
+    - task: dependency-check-build-task@6
+      displayName: 'OWASP Dependency Check'
+      inputs:
+        projectName: 'appinnovationday'
+        scanPath: '**/**/*.csproj'
+        format: 'HTML, CSV, JSON'
+        failOnCVSS: '7'
+        warnOnCVSSViolation: true    
+- stage: Build
+  displayName: 'Build the App and scan code'
+  pool: 
+    vmImage: windows-latest
+  jobs:
+  - job:
+    steps:
+    - checkout: self
+      fetchDepth: 0    
+    # - task: SnykSecurityScan@1
+    #   displayName: Security scan with Snyk
+    #   inputs:
+    #     serviceConnectionEndpoint: 'snykpoc'
+    #     testType: 'app'
+    #     monitorWhen: 'always'
+    #     failOnIssues: false
+    #     projectName: '.....'
+    #     organization: '....'
+    #     # targetFile: 'src\AuthHelper.sln'        
+    - task: NuGetToolInstaller@1
+      displayName: 'Nuget Install'
+    - task: NuGetCommand@2
+      displayName: 'Nuget restore'
+      inputs:
+        restoreSolution: '$(solution)'     
+  # Prepare Analysis Configuration task
+    - task: SonarCloudPrepare@1
+      displayName: 'Prepare SonarCloud Analysis'
+      inputs:
+        SonarCloud: 'sonarcloudpoc'
+        organization: 'vzisiadisms'
+        scannerMode: 'MSBuild'
+        projectKey: 'sonarCloud project key'
+        projectName: 'sonarCloud project'
+    - task: VSBuild@1
+      displayName: 'Build App'
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    # Run Code Analysis task
+    - task: SonarCloudAnalyze@1
+      displayName: 'Run SonarQube Code Analysis'
+    # Publish Quality Gate Result task
+    - task: SonarCloudPublish@1
+      displayName: 'Publish Quality Gate Results to SonarCloud'
+      inputs:
+        pollingTimeoutSec: '300'
+
+
+
