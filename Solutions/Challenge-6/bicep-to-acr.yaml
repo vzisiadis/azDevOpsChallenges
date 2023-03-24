@@ -1,0 +1,49 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - 'modules/storage-account/**'
+
+
+variables: 
+- name: ServiceConnectionName
+  value: '....'
+- name: ModuleName
+  value: appservicecontainer
+- name: ModuleRegistryServer
+  value: registry.azurecr.io
+- name: ModuleFilePath
+  value: Resources/IaC-Modules/main.bicep
+- name: ModuleMetadataFilePath
+  value: Resources/IaC-Modules/metadata.json
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: Publish
+  jobs:
+  - job: Publish
+    steps:
+      - script: |
+          majorMinorVersionNumber=$(jq '(.version.major | tostring) + "." + (.version.minor | tostring)' $(ModuleMetadataFilePath) -r )
+          versionNumber="$majorMinorVersionNumber.$(Build.BuildNumber)"
+          echo "##vso[task.setvariable variable=ModuleVersion;]$versionNumber"
+        name: GetModuleVersionNumber
+        displayName: Get module version number
+      - task: AzureCLI@2
+        name: Publish
+        displayName: Publish module
+        inputs:
+          azureSubscription: $(ServiceConnectionName)
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            bicep publish $(ModuleFilePath)\
+              --target 'br:$(ModuleRegistryServer)/$(ModuleName):$(ModuleVersion)' \
+              
+              
+      #  --file $(ModuleFilePath)
