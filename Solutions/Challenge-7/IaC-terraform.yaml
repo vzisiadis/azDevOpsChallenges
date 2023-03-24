@@ -1,0 +1,96 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ branches:
+   include:
+     - main
+ paths:
+   exclude:
+     - pipelines/*
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: 'init_validate_scan'
+  displayName: 'Init, validate and scan'
+  jobs: 
+  - job: tf_init_validate
+    displayName: 'Terraform Init and Validate'
+    steps:
+    - task: TerraformTaskV3@3
+      displayName: 'Init'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        backendServiceArm: 'appinnday2023'
+        backendAzureRmResourceGroupName: 'tfstate'
+        backendAzureRmStorageAccountName: '....'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'terraform.tfstate'       
+    - task: TerraformTaskV3@3
+      displayName: 'Validate'
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+  - job: msdevops_terrascan
+    displayName: 'Terrascan - Microsoft Security DevOps'
+    dependsOn: tf_init_validate
+    pool:
+      vmImage: windows-latest
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Install dotnet 6.0'
+      inputs:
+        version: 6.0.x 
+    - task: MicrosoftSecurityDevOps@1
+      displayName: 'Run Terrascan - MS SecurityDevOps'
+      inputs:
+        categories: 'IaC'
+        # Template Analyzer Template Analyzer scans ARM (Azure Resource Manager) and Bicep Infrastructure-as-Code (IaC) templates 
+        #to ensure security and best practice checks are being followed before deployment of your Azure solutions.
+        tools: 'terrascan'
+        break: true #will fail this step if any error level results are found - Default is false# 
+- stage: 'plan_apply'
+  displayName: 'Plan, review and apply'
+  dependsOn: init_validate_scan
+  jobs: 
+  - job: tf_plan
+    displayName: 'Terraform Plan'
+    steps:
+    - task: TerraformTaskV3@3
+      displayName: 'Plan'
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        environmentServiceNameAzureRM: 'appinnday2023'
+  - job: review
+    displayName: 'Manual review'
+    dependsOn: tf_plan
+    pool: server
+    steps:     
+    - task: ManualValidation@0
+      timeoutInMinutes: 1440 # task times out in 1 day
+      displayName: 'Manual review of changes'
+      inputs:
+        notifyUsers: |
+          vzisiadis@microsoft.com
+        instructions: 'Please validate the build configuration and resume'
+        onTimeout: 'resume'  
+  - job: apply
+    displayName: 'Terraform Apply'
+    dependsOn: review
+    steps:        
+    - task: TerraformTaskV3@3
+      displayName: 'Apply'
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        environmentServiceNameAzureRM: 'appinnday2023'
