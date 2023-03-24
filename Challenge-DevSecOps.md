@@ -1,6 +1,6 @@
 # Challenge 07 - DevSecOps
 
-[< Previous Challenge](./Challenge-Pipelines-2.md) - **[Home](../README.md)** 
+[< Previous Challenge](./Challenge-Bicep.md) - **[Home](../README.md)** 
 
 ## Introduction
 
