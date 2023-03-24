@@ -1,0 +1,38 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - 'Resources/IaCFromRegistry/**'
+
+variables: 
+- name: ServiceConnectionName
+  value: '......'
+- name: AzureResourceGroupName
+  value: devopsworkshop2023
+- name: AzureRegion
+  value: westeurope
+
+
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: Publish
+  jobs:
+  - job: Publish
+    steps:
+      - task: AzureCLI@2
+        name: Publish
+        displayName: Publish template spec
+        inputs:
+          azureSubscription: $(ServiceConnectionName)
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az deployment group create \
+              --resource-group $(AzureResourceGroupName) \
+              --template-file Resources/Iac-Modules/mainFromACR.bicep
